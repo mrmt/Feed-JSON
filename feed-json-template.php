@@ -27,6 +27,12 @@ if ( have_posts() ) {
 		the_post();
 		$id = (int) $post->ID;
 
+		if(get_option(FEED_JSON_ICON_URL)){
+			$icon_url = get_option(FEED_JSON_ICON_URL);
+		}else{
+			$icon_url = FEED_JSON_ICON_URL_DEFAULT;
+		}
+
 		$single = array(
 			'contentUri' => get_bloginfo('url'), // not used
 			'title' => get_the_title(),
@@ -40,7 +46,7 @@ if ( have_posts() ) {
 				'force_array' => 1,
 				'large' => '',// not used
 				'medium' => '',// not used
-				'small' => 'http://alpha.mixi.co.jp/blog/wp-content/uploads/2011/12/40x40.png',
+				'small' => $icon_url,
 				),
 			'user' => array(
 				'id' => '', // not used

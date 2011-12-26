@@ -27,12 +27,19 @@ License:
     along with this program; if not, write to the Free Software
     Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
+define('FEED_JSON_ICON_URL', 'feed-json-icon-url');
+define('FEED_JSON_ICON_URL_DEFAULT', 'http://alpha.mixi.co.jp/blog/wp-content/uploads/2011/12/40x40.png');
+
+$feed_json_param = array(FEED_JSON_ICON_URL);
+
 class feed_json {
 	function feed_json() {
 		global $wp_rewrite;
 
 		add_action('init', array(&$this, 'add_feed_json'));
 		add_action('do_feed_json', array(&$this, 'do_feed_json'), 10, 1);
+		add_action('admin_menu', array(&$this, 'feed_json_plugin_menu'));
+
 		add_filter('template_include', array(&$this, 'template_json'));
 		add_filter('query_vars', array(&$this, 'add_query_vars'));
 
@@ -94,6 +101,29 @@ class feed_json {
 			: $template
 			);
 	}
+
+	function feed_json_plugin_menu(){
+		add_menu_page('Feed JSON', 'Feed JSON', 8, basename(__file__), '', plugins_url('m_icon.png',__FILE__));
+		add_submenu_page(basename(__file__), '設定', '設定', 'manage_options', basename(__file__), array(&$this, 'feed_json_plugin_options'));
+	}
+
+	function feed_json_plugin_options(){
+		global $feed_json_param;
+
+		$html = array(
+			      '<form method="post" action="options.php">',
+			      '<input type="hidden" name="action" value="update" />',
+			      '<input type="hidden" name="page_options" value="'.implode(',', $feed_json_param) . '" />',
+			      wp_nonce_field('update-options'),
+			      '<h2>Feed JSON icon url</h2>',
+			      '<p>default value: ' . FEED_JSON_ICON_URL_DEFAULT . '</p>',
+			      '<p><input type="text" name="' . FEED_JSON_ICON_URL . '" value="' . get_option(FEED_JSON_ICON_URL) . '" style="width:300px;" /></p>',
+			      '<p><input type="submit" class="button-primary" value="Save Changes" /></p>',
+			      '</form>'
+			      );
+		echo implode('', $html);
+	}
 }
+
 new feed_json();
 ?>
