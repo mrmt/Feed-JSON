@@ -21,44 +21,47 @@ function my_json_encode( $string ) {
 	return $json->encode( $string );
 }
 
+if(get_option(FEED_JSON_ICON_URL)){
+	$icon_url = get_option(FEED_JSON_ICON_URL);
+}else{
+	$icon_url = FEED_JSON_ICON_URL_DEFAULT;
+}
+
 if ( have_posts() ) {
 	$json = array();
 	while ( have_posts() ) {
 		the_post();
 		$id = (int) $post->ID;
 
-		if(get_option(FEED_JSON_ICON_URL)){
-			$icon_url = get_option(FEED_JSON_ICON_URL);
-		}else{
-			$icon_url = FEED_JSON_ICON_URL_DEFAULT;
-		}
+		if(get_post_status() === 'publish'){
 
-		$single = array(
-			'contentUri' => get_bloginfo('url'), // not used
-			'title' => get_the_title(),
-			'body' => get_the_excerpt_max_charlength(16) . '...', // not used
-			'urls' => array(
-				'pcUrl' => get_permalink(),
-				'mobileUrl' => '', // not used
-				'smartphoneUrl' => '',// not used
-				),
-			'images' => array(
-				'force_array' => 1,
-				'large' => '',// not used
-				'medium' => '',// not used
-				'small' => $icon_url,
-				),
-			'user' => array(
-				'id' => '', // not used
-				'displayName' => '', // not used
-				'thumbnailUrl' => '', // not used
-				),
-			'favoriteCount' => '', // not used
-			'commentCount' => '', // not used
-			'sourceName' => '', // not used
-			'created' => get_the_date('c','','',false) ,
-			);
-		$json[] = $single;
+			$single = array(
+					'contentUri' => get_bloginfo('url'), // not used
+					'title' => get_the_title(),
+					'body' => get_the_excerpt_max_charlength(16) . '...', // not used
+					'urls' => array(
+							'pcUrl' => get_permalink(),
+							'mobileUrl' => '', // not used
+							'smartphoneUrl' => '',// not used
+							),
+					'images' => array(
+							  'force_array' => 1,
+							  'large' => '',// not used
+							  'medium' => '',// not used
+							  'small' => $icon_url,
+							  ),
+					'user' => array(
+							'id' => '', // not used
+							'displayName' => '', // not used
+							'thumbnailUrl' => '', // not used
+							),
+					'favoriteCount' => '', // not used
+					'commentCount' => '', // not used
+					'sourceName' => '', // not used
+					'created' => get_the_date('c','','',false) ,
+					);
+			$json[] = $single;
+		}
 	}
 
 	$json = '{"entry" : ' . my_json_encode($json) . '}';
