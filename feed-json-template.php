@@ -36,7 +36,7 @@ if ( have_posts() ) {
 		if(get_post_status() === 'publish'){
 
 			$single = array(
-					'contentUri' => get_bloginfo('url'), // not used
+					'contentUri' => get_permalink(),
 					'title' => get_the_title(),
 					'body' => get_the_excerpt_max_charlength(16) . '...', // not used
 					'urls' => array(
@@ -52,7 +52,7 @@ if ( have_posts() ) {
 							  ),
 					'user' => array(
 							'id' => '', // not used
-							'displayName' => '', // not used
+							'displayName' => get_the_title(),
 							'thumbnailUrl' => '', // not used
 							),
 					'favoriteCount' => '', // not used
